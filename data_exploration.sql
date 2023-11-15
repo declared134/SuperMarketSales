@@ -90,12 +90,24 @@ HAVING count > 1
 with SalesCTE as (
 	
     SELECT MONTHNAME(STR_TO_DATE(Date, '%m/%d/%Y')) AS Month, substring(Time, 1,2) as Hour, 
-    sum(quantity) as TotalSales, branch, round(avg(rating),2) as AverageRatings
+    sum(quantity) as TotalSales, branch, cogs, total
+     `gross income`
 	FROM supermarketsales
-	group by Month, Hour, branch
+    WHERE MONTHNAME(STR_TO_DATE(Date, '%m/%d/%Y')) = 'March'
+	group by Month, Hour, branch, `gross income`, cogs, total
 	order by TotalSales desc
 
 )
+
+select *
+from SalesCTE
+
+CREATE VIEW salesdata AS
+select SELECT MONTHNAME(STR_TO_DATE(Date, '%m/%d/%Y')) AS Month, substring(Time, 1,2) as Hour, 
+    sum(quantity) as TotalSales, branch, round(avg(rating),2) as AverageRatings
+FROM supermarketsales
+group by `Product line`,Month, Hour, branch 
+order by TotalSales desc
 
 select sum(totalsales) as TotalSales, branch
 from SalesCTE
